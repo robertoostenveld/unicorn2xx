@@ -6,17 +6,17 @@ This repository includes a number of command-line applications that receive data
 
 This streams the EEG data to the screen or a tab-separated text file.
 
-## Unicorn2ft
-
-This streams the EEG data to the [FieldTrip buffer](https://www.fieldtriptoolbox.org/development/realtime/).
-
-## Unicorn2lsl
-
-This streams the EEG data to [LabStreamingLayer (LSL)](https://labstreaminglayer.readthedocs.io).
-
 ## Unicorn2audio
 
 This resamples the EEG data to an audio sample rate and streams it to a virtual (or real) audio interface. This can for example be used with [BlackHole](https://github.com/ExistentialAudio/BlackHole) or SoundFlower on macOS, or [VB-Audio Cable](https://vb-audio.com/Cable/index.htm) on Windows.
+
+## Unicorn2lsl (work-in-progress)
+
+This streams the EEG data to [LabStreamingLayer (LSL)](https://labstreaminglayer.readthedocs.io).
+
+## Unicorn2ft (work-in-progress)
+
+This streams the EEG data to the [FieldTrip buffer](https://www.fieldtriptoolbox.org/development/realtime/).
 
 # External dependencies
 
