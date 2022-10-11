@@ -2,6 +2,10 @@
 
 This includes a number of command-line applications that receive data from the Unicorn Hybrid Black 8-channel EEG system, and stream the data to various other interfaces.
 
+## Unicorn2txt
+
+This streams the EEG data to the screen or a tab-separated text file.
+
 ## Unicorn2ft
 
 This streams the EEG data to the [FieldTrip buffer](https://www.fieldtriptoolbox.org/development/realtime/).
