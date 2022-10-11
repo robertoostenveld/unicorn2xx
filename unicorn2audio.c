@@ -437,11 +437,11 @@ int main(int argc, char **argv)
         };
 
         /* initialize a lowpass filter */
-        for (int i=0; i<8; i++)
+        for (int i=0; i<channelCount; i++)
                 eegfilt[i] = eegdata[i];
 
         /* apply a lowpass filter */
-        for (int i=0; i<8; i++)
+        for (int i=0; i<channelCount; i++)
                 eegdata[i] -= smooth(eegfilt[i], eegdata[i], lambda);
 
         printf("Filling buffer...\n");
@@ -456,7 +456,7 @@ int main(int argc, char **argv)
                 samplesReceived++;
 
                 /* apply a lowpass filter */
-                for (int i=0; i<8; i++)
+                for (int i=0; i<channelCount; i++)
                         eegdata[i] -= smooth(eegfilt[i], eegdata[i], lambda);
 
                 /* add the current sample to the input buffer and increment the counter */
@@ -501,7 +501,7 @@ int main(int argc, char **argv)
                 samplesReceived++;
 
                 /* apply a lowpass filter */
-                for (int i=0; i<8; i++)
+                for (int i=0; i<channelCount; i++)
                         eegdata[i] -= smooth(eegfilt[i], eegdata[i], lambda);
 
                 /* add the current sample to the input buffer and increment the counter */
