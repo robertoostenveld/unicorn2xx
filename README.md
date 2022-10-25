@@ -1,6 +1,12 @@
 # Unicorn2xx
 
-This repository includes a number of command-line applications that receive data from the Unicorn Hybrid Black 8-channel EEG system, and stream the data to various other interfaces. These applications can be compiled on macOS, Linux ann Windows.
+This repository includes a number of command-line applications that receive data from the Unicorn Hybrid Black 8-channel EEG system, and stream the data to various other interfaces. These applications can be compiled on macOS, Linux and Windows.
+
+Prior to the Unicorn connecting, the LED gives short flashes every second. After connecting it blinks on and off in a regular pace. When streaming the LED is constantly on. The Bluetooth protocol is documented in a PDF that is hosted on https://github.com/unicorn-bi/Unicorn-Suite-Hybrid-Black.
+
+If you encounter Bluetooth connection problems on macOS, such as the LED keeps giving short flashes which indicates that it is not connecting, open a terminal and type
+
+    sudo pkill bluetoothd
 
 ## Unicorn2txt
 
