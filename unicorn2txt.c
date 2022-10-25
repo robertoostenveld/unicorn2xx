@@ -43,6 +43,8 @@ int check(enum sp_return result);
 /* Helper function for stopping properly. */
 void signal_handler(int signum);
 
+#define FSAMPLE (250)
+
 char start_acq[]      = {0x61, 0x7C, 0x87};
 char stop_acq[]       = {0x63, 0x5C, 0xC5};
 char start_response[] = {0x00, 0x00, 0x00};
@@ -179,7 +181,7 @@ int main(int argc, char **argv)
                         fprintf(fp, "%.2f\t%lu\n", battery, counter);
 
                         /* give some feedback on screen when writing data to file */
-                        if (strlen(outputFile) && (counter % 250)==0) {
+                        if (strlen(outputFile) && (counter % FSAMPLE)==0) {
                                 printf("Wrote %lu samples.\n", counter);
                         }
                 }
