@@ -69,6 +69,7 @@ int unicorn_pull_sample(struct sp_port *port, float *dat);
 #define STRLEN        (80)
 #define PACKETSIZE    (45)
 #define TIMEOUT       (5000)
+#define HPFILTER      (10.0)
 
 char start_acq[]      = {0x61, 0x7C, 0x87};
 char stop_acq[]       = {0x63, 0x5C, 0xC5};
@@ -207,10 +208,9 @@ int main(int argc, char **argv)
         char line[STRLEN];
         FILE *fp;
         int inputDevice = 0;
-        float bufferSize, blockSize;
+        float bufferSize, blockSize, hpFilter;
         struct sp_port **port_list = NULL;
         float eegdata[NCHAN], eegfilt[NCHAN];
-        float lambda = 0.0002772; // 0.9997228; // this implements a 10-second exponential decay at 250 Hz
         unsigned long samplesReceived = 0;
 
         /* variables that are specific for PortAudio */
@@ -262,6 +262,14 @@ int main(int argc, char **argv)
                 blockSize = BLOCKSIZE;
         else
                 blockSize = atof(line);
+
+        printf("High-pass filter in seconds [%.0f]: ", HPFILTER);
+        fgets(line, STRLEN, stdin);
+        if (strlen(line) == 1)
+                /* this implements an exponential decay of 1/2 after 10 seconds at 250 Hz */
+                hpFilter = 1.0 - pow(0.5, 1.0/(FSAMPLE*HPFILTER));
+        else
+                hpFilter = 1.0 - pow(0.5, 1.0/(FSAMPLE*atof(line)));
 
         /* copy the selected port, clear the others */
         sp_check(sp_copy_port(port_list[inputDevice], &port));
@@ -431,18 +439,10 @@ int main(int argc, char **argv)
         }
         samplesReceived = 0;
 
-        if (unicorn_pull_sample(port, eegdata)!=0) {
-                printf("Cannot read packet.\n");
-                goto cleanup4;
-        };
-
-        /* initialize a lowpass filter */
-        for (int i=0; i<channelCount; i++)
+        /* initialize an exponential smoothing filter */
+        for (unsigned int i=0; i<channelCount; i++) {
                 eegfilt[i] = eegdata[i];
-
-        /* apply a lowpass filter */
-        for (int i=0; i<channelCount; i++)
-                eegdata[i] -= smooth(eegfilt[i], eegdata[i], lambda);
+        }
 
         printf("Filling buffer...\n");
 
@@ -455,9 +455,11 @@ int main(int argc, char **argv)
                 }
                 samplesReceived++;
 
-                /* apply a lowpass filter */
-                for (int i=0; i<channelCount; i++)
-                        eegdata[i] -= smooth(eegfilt[i], eegdata[i], lambda);
+                /* apply a highpass filter by subtracting a smoothed version of the signal */
+                for (unsigned int i=0; i<channelCount; i++) {
+                        eegfilt[i] = smooth(eegfilt[i], eegdata[i], hpFilter);
+                        eegdata[i] -= eegfilt[i];
+                }
 
                 /* add the current sample to the input buffer and increment the counter */
                 for (unsigned int i = 0; i < channelCount; i++) {
@@ -500,9 +502,11 @@ int main(int argc, char **argv)
                 }
                 samplesReceived++;
 
-                /* apply a lowpass filter */
-                for (int i=0; i<channelCount; i++)
-                        eegdata[i] -= smooth(eegfilt[i], eegdata[i], lambda);
+                /* apply a highpass filter by subtracting a smoothed version of the signal */
+                for (unsigned int i=0; i<channelCount; i++) {
+                        eegfilt[i] = smooth(eegfilt[i], eegdata[i], hpFilter);
+                        eegdata[i] -= eegfilt[i];
+                }
 
                 /* add the current sample to the input buffer and increment the counter */
                 for (unsigned int i = 0; i < channelCount; i++) {
