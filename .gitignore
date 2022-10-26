@@ -1,6 +1,6 @@
 *.o
+*.bak
 build
-out
 .vs
 external
 CMakeSettings.json
