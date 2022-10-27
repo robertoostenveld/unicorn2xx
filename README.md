@@ -20,7 +20,9 @@ This streams the EEG data to [LabStreamingLayer (LSL)](https://labstreaminglayer
 
 ## Unicorn2audio
 
-This resamples the EEG data to an audio sample rate and streams it to a virtual (or real) audio interface. This can for example be used with [BlackHole](https://github.com/ExistentialAudio/BlackHole) or SoundFlower on macOS, or [VB-Audio Cable](https://vb-audio.com/Cable/index.htm) on Windows.
+This resamples the EEG data to an audio sample rate and streams it as float32 values to a virtual (or real) audio interface. This can for example be used with [BlackHole](https://github.com/ExistentialAudio/BlackHole) or SoundFlower on macOS, or [VB-Audio Cable](https://vb-audio.com/Cable/index.htm) on Windows.
+
+Since the float32 audio output must be scaled between -1 and +1, the `unicorn2audio` application implements a high-pass filter to remove electrode offsets and drifts. This also means that the offset and slow fluctuations in the accelerometer battery and counter channels is removed. Furthermore, it implements an automatic scaling to fit the signal amplitude between -1 and +1. The scaling is automaticallu adjusted to the most extreme values that are observed.
 
 # External dependencies
 

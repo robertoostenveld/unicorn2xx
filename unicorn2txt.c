@@ -25,7 +25,8 @@
 #include <errno.h>
 #include <math.h>
 #include <signal.h>
-#include <libserialport.h>
+
+#include "libserialport.h"
 
 #if defined __linux__ || defined __APPLE__
 // Linux and macOS code goes here
