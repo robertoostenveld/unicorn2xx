@@ -17,7 +17,6 @@
  *  You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
- *
  */
 
 #include <stdio.h>
@@ -43,8 +42,6 @@ int check(enum sp_return result);
 /* Helper function for stopping properly. */
 void signal_handler(int signum);
 
-#define FSAMPLE (250)
-
 char start_acq[]      = {0x61, 0x7C, 0x87};
 char stop_acq[]       = {0x63, 0x5C, 0xC5};
 char start_response[] = {0x00, 0x00, 0x00};
@@ -52,9 +49,10 @@ char stop_response[]  = {0x00, 0x00, 0x00};
 char start_sequence[] = {0xC0, 0x00};
 char stop_sequence[]  = {0x0D, 0x0A};
 
-#define STRLEN 80
-#define PACKETSIZE 45
-#define TIMEOUT 5000
+#define FSAMPLE     (250)
+#define STRLEN      (80)
+#define PACKETSIZE  (45)
+#define TIMEOUT     (5000)
 
 struct sp_port *port = NULL;
 int running = 1;
