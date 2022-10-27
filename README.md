@@ -22,16 +22,11 @@ This resamples the EEG data to an audio sample rate and streams it to a virtual 
 
 This streams the EEG data to [LabStreamingLayer (LSL)](https://labstreaminglayer.readthedocs.io).
 
-## Unicorn2ft (work-in-progress)
-
-This streams the EEG data to the [FieldTrip buffer](https://www.fieldtriptoolbox.org/development/realtime/).
-
 # External dependencies
 
 - <https://sigrok.org/wiki/Libserialport> for all applications
 - <http://www.portaudio.com> and <http://libsndfile.github.io/libsamplerate> for `unicorn2audio`
 - <https://labstreaminglayer.readthedocs.io> for `unicorn2lsl`
-- <https://www.fieldtriptoolbox.org/development/realtime/buffer> for `unicorn2ft`
 
 You can install these with your platform-specific package manager (homebrew, apt, yum), after which they will end up in `/usr/local/lib` and `/usr/local/include`. You can also install them manually in the `external` directory. In that case the directory layout should be
 
@@ -46,10 +41,7 @@ external/
 ├── samplerate
 │   ├── include
 │   └── lib
-├── lsl
-│   ├── include
-│   └── lib
-└── buffer
+└── lsl
     ├── include
     └── lib
 ```
