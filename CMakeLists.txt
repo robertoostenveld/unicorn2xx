@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 include_directories(/usr/local/include)
-include_directories(external/lsl/include external/portaudio/include external/samplerate/include)
+include_directories(external/lsl/include external/portaudio/include external/samplerate/include external/serialport/include)
 
 if (UNIX)
 endif()
