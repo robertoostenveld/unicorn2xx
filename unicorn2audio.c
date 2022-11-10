@@ -622,6 +622,7 @@ void signal_handler(int signum) {
                 printf("SIGINT\n");
                 keepRunning = 0;
                 break;
+#ifndef _WIN32
         case SIGHUP:
                 printf("SIGHUP\n");
                 break;
@@ -634,6 +635,7 @@ void signal_handler(int signum) {
         case SIGUSR2:
                 printf("SIGUSR2\n");
                 break;
+#endif
         }
         return;
 }
