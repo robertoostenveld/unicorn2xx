@@ -69,6 +69,7 @@ int unicorn_pull_sample(struct sp_port *port, float *dat);
 #define PACKETSIZE    (45)
 #define TIMEOUT       (5000)
 #define HPFILTER      (10.0)
+#define OUTPUTLIMIT   (1.0)
 
 char start_acq[]      = {0x61, 0x7C, 0x87};
 char stop_acq[]       = {0x63, 0x5C, 0xC5};
@@ -92,9 +93,9 @@ SRC_DATA resampleData;
 int srcErr;
 
 float inputRate, outputRate, resampleRatio;
-short enableResample = 0, enableUpdate = 0;
+short enableResampleBuffers = 0, enableUpdateRatio = 0, enableUpdateLimit = 0;
 int channelCount, outputBlocksize, inputBufsize, outputBufsize;
-float outputLimit = 1.;
+float outputLimit;
 
 /*******************************************************************************************************/
 int resample_buffers(void) {
@@ -189,13 +190,15 @@ static int output_callback(const void *input,
 
         outputData->frames -= newFrames;
 
-        for (unsigned int i = 0; i < (newFrames * channelCount); i++)
-                outputLimit = max(outputLimit, fabsf(data[i]));
+        if (enableUpdateLimit) {
+               for (unsigned int i = 0; i < (newFrames * channelCount); i++)
+                        outputLimit = max(outputLimit, fabsf(data[i]));
+        }
 
-        if (enableResample)
+        if (enableResampleBuffers)
                 resample_buffers();
 
-        if (enableUpdate)
+        if (enableUpdateRatio)
                 update_ratio();
 
         return paContinue;
@@ -269,6 +272,19 @@ int main(int argc, char **argv)
                 hpFilter = 1.0 - pow(0.5, 1.0/(FSAMPLE*HPFILTER));
         else
                 hpFilter = 1.0 - pow(0.5, 1.0/(FSAMPLE*atof(line)));
+
+        printf("Output limit [automatic scale]: ");
+        fgets(line, STRLEN, stdin);
+        if (strlen(line) == 1) {
+                /* start with the default and update automatically */
+                outputLimit = OUTPUTLIMIT;
+                enableUpdateLimit = 1;
+        }
+        else {
+                /* use the user-supplied value and do not update automatically */
+                outputLimit = atof(line);
+                enableUpdateLimit = 0;
+        }
 
         /* copy the selected port, clear the others */
         sp_check(sp_copy_port(port_list[inputDevice], &port));
@@ -467,7 +483,9 @@ int main(int argc, char **argv)
 
                 /* add the current sample to the input buffer and increment the counter */
                 for (unsigned int i = 0; i < channelCount; i++) {
-                        outputLimit = max(outputLimit, fabsf(eegdata[i]));
+                        if (enableUpdateLimit) {
+                                outputLimit = max(outputLimit, fabsf(eegdata[i]));
+                        }
                         inputData.data[inputData.frames * channelCount + i] = eegdata[i] / outputLimit;
                 }
                 inputData.frames++;
@@ -493,8 +511,8 @@ int main(int argc, char **argv)
         printf("Started output audio stream.\n");
 
         /* enable the resampling and the dynamic updating of the samplerate ratio */
-        enableResample = 1;
-        enableUpdate = 1;
+        enableResampleBuffers = 1;
+        enableUpdateRatio = 1;
         keepRunning = 1;
 
         printf("Processing data...\n");
@@ -514,7 +532,9 @@ int main(int argc, char **argv)
 
                 /* add the current sample to the input buffer and increment the counter */
                 for (unsigned int i = 0; i < channelCount; i++) {
-                        outputLimit = max(outputLimit, fabsf(eegdata[i]));
+                        if (enableUpdateLimit) {
+                                outputLimit = max(outputLimit, fabsf(eegdata[i]));
+                        }
                         inputData.data[inputData.frames * channelCount + i] = eegdata[i] / outputLimit;
                 }
                 inputData.frames++;
@@ -525,8 +545,9 @@ int main(int argc, char **argv)
 
 /* each of the stages comes with its own cleanup section */
 cleanup4:
-        enableResample = 0;
-        enableUpdate = 0;
+        enableResampleBuffers = 0;
+        enableUpdateRatio = 0;
+        enableUpdateLimit = 0;
         Pa_StopStream(outputStream);
         sp_blocking_write(port, stop_acq, 3, TIMEOUT);
 
@@ -624,21 +645,18 @@ void stream_finished(void *userData) {
 void signal_handler(int signum) {
         switch (signum) {
         case SIGINT:
-                printf("SIGINT\n");
+                printf("Received SIGINT\n");
                 keepRunning = 0;
                 break;
 #ifndef _WIN32
         case SIGHUP:
-                printf("SIGHUP\n");
-                break;
-        case SIGKILL:
-                printf("SIGKILL\n");
+                printf("Received SIGHUP\n");
                 break;
         case SIGUSR1:
-                printf("SIGUSR1\n");
+                printf("Received SIGUSR1\n");
                 break;
         case SIGUSR2:
-                printf("SIGUSR2\n");
+                printf("Received SIGUSR2\n");
                 break;
 #endif
         }
