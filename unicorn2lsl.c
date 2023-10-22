@@ -255,21 +255,18 @@ int check(enum sp_return result)
 void signal_handler(int signum) {
         switch (signum) {
         case SIGINT:
-                printf("SIGINT\n");
+                printf("Received SIGINT\n");
                 running = 0;
                 break;
 #ifndef _WIN32
         case SIGHUP:
-                printf("SIGHUP\n");
-                break;
-        case SIGKILL:
-                printf("SIGKILL\n");
+                printf("Received SIGHUP\n");
                 break;
         case SIGUSR1:
-                printf("SIGUSR1\n");
+                printf("Received SIGUSR1\n");
                 break;
         case SIGUSR2:
-                printf("SIGUSR2\n");
+                printf("Received SIGUSR2\n");
                 break;
 #endif
         }
