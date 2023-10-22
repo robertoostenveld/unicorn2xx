@@ -142,6 +142,11 @@ int main(int argc, char **argv)
         }
 
         signal(SIGINT, signal_handler);
+#ifndef _WIN32
+        signal(SIGHUP, signal_handler);
+        signal(SIGUSR1, signal_handler);
+        signal(SIGUSR2, signal_handler);
+#endif
 
         fprintf(fp, "eeg1\teeg2\teeg3\teeg4\teeg5\teeg6\teeg7\teeg8\taccel1\taccel2\taccel3\tgyro1\tgyro2\tgyro3\tbattery\tcounter\n");
 

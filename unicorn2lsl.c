@@ -137,6 +137,11 @@ int main(int argc, char **argv)
         printf("Started data stream.\n");
 
         signal(SIGINT, signal_handler);
+#ifndef _WIN32
+        signal(SIGHUP, signal_handler);
+        signal(SIGUSR1, signal_handler);
+        signal(SIGUSR2, signal_handler);
+#endif
 
         /* initialize the LSL stream */
         rand_str(outputUID, 8);
