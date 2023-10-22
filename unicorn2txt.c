@@ -200,7 +200,7 @@ cleanup0:
 }
 
 
-/* Helper function for error handling. */
+/* Helper function for serial port error handling. */
 int check(enum sp_return result)
 {
         char *error_message;

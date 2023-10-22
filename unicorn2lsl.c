@@ -38,7 +38,7 @@
 // Windows code goes here
 #endif
 
-/* Helper function for error handling. */
+/* Helper function for serial port error handling. */
 int check(enum sp_return result);
 
 /* Helper function for stopping properly. */
@@ -159,9 +159,9 @@ int main(int argc, char **argv)
         for (int c=0; c<NCHANS; c++) {
                 printf("LSL channel %2d: %8s, %8s, %8s\n", c+1, label[c], unit[c], type[c]);
                 lsl_xml_ptr chn = lsl_append_child(chns, "channel");
-                lsl_append_child_value(chn,"label", label[c]);
-                lsl_append_child_value(chn,"unit", unit[c]);
-                lsl_append_child_value(chn,"type", type[c]);
+                lsl_append_child_value(chn, "label", label[c]);
+                lsl_append_child_value(chn, "unit", unit[c]);
+                lsl_append_child_value(chn, "type", type[c]);
         }
 
         lsl_outlet outlet = lsl_create_outlet(info, 0, LSLBUFFER);

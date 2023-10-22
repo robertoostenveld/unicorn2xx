@@ -582,7 +582,7 @@ int unicorn_pull_sample(struct sp_port *port, float *dat)
 }
 
 /*******************************************************************************************************/
-/* Helper function for error handling. */
+/* Helper function for serial port error handling. */
 int sp_check(enum sp_return result)
 {
         char *error_message;
