@@ -24,6 +24,15 @@ This resamples the EEG data to an audio sample rate and streams it as float32 va
 
 Since the float32 audio output must be scaled between -1 and +1, the `unicorn2audio` application implements a high-pass filter to remove electrode offsets and drifts. This also means that the offset and slow fluctuations in the accelerometer battery and counter channels is removed. Furthermore, it implements an automatic scaling to fit the signal amplitude between -1 and +1. The scaling is automaticallu adjusted to the most extreme values that are observed.
 
+# Compiling
+
+```
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
+
 # External dependencies
 
 - <https://sigrok.org/wiki/Libserialport> for all applications
